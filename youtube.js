@@ -32,10 +32,8 @@ function onYouTubeIframeAPIReady() {
             'enablejsapi': 0,
             'autohide': 1,
             'autoplay': 0,
-            'controls': 0,
+            'controls': 0, //值：0、1或2。默認值為1。此參數會指明視頻播放器控件是否會顯示。
             'showinfo': 0,
-            'rel': 0,
-            'playsinline': 1,
             'start': 0
         },
         events: {
@@ -45,6 +43,19 @@ function onYouTubeIframeAPIReady() {
             'onError': onPlayerError
         }
     });
+}
+
+function newPlayer(videoid, MSG, startSeconds) {
+    if (MSG == 0) {
+        cueVideoById(videoid, startSeconds)
+    } else if (MSG == 1) {
+        loadVideoById(videoid);
+        playVideo();
+    } else if (MSG == 2) {
+        loadVideoById(videoid);
+        pauseVideo();
+    }
+    AndroidFunction.setDuration(player.getDuration());
 }
 
 function newPlayer(videoid, MSG) {
@@ -89,6 +100,12 @@ function onPlayerError(event) {
 
 function stopVideo() {
     player.stopVideo();
+}
+
+function cueVideoById(videoid, startSeconds) {
+    player.cueVideoById(videoid, startSeconds);
+    AndroidFunction.setSize(player.width, player.height);
+    //player.playVideo();
 }
 
 function cueVideoById(videoid) {

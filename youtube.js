@@ -23,7 +23,7 @@ function createPlayerDiv(w, h) {
     onYouTubeIframeAPIReady();
 }
 
-function onYouTubeIframeAPIReady() {
+function onYouTubeIframeAPIReady(startSeconds) {
     player = new YT.Player('player', {
         width: PLAYER_WIDTH,
         height: PLAYER_HEIGHT,
@@ -35,6 +35,39 @@ function onYouTubeIframeAPIReady() {
             'controls': 0, //值：0、1或2。默認值為1。此參數會指明視頻播放器控件是否會顯示。
             'showinfo': 0,
             'start': 0
+        },
+        events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange,
+            'onPlaybackRateChange': onPlayerPlaybackRateChange,
+            'onError': onPlayerError
+        }
+    });
+}
+
+function createPlayerDiv(w, h, startSeconds) {
+    var obj = document.createElement("div");
+    obj.id = "player";
+    document.body.appendChild(obj);
+    AndroidFunction.log(w + " ; " + h);
+    PLAYER_WIDTH = w / window.devicePixelRatio;
+    PLAYER_HEIGHT = h / window.devicePixelRatio;
+    AndroidFunction.log(window.devicePixelRatio + " ; " + w + " ; " + h);
+    onYouTubeIframeAPIReady(startSeconds);
+}
+
+function onYouTubeIframeAPIReady(startSeconds) {
+    player = new YT.Player('player', {
+        width: PLAYER_WIDTH,
+        height: PLAYER_HEIGHT,
+        //                videoId: videoid,
+        playerVars: {
+            'enablejsapi': 0,
+            'autohide': 1,
+            'autoplay': 0,
+            'controls': 0, //值：0、1或2。默認值為1。此參數會指明視頻播放器控件是否會顯示。
+            'showinfo': 0,
+            'start': startSeconds
         },
         events: {
             'onReady': onPlayerReady,
@@ -110,6 +143,12 @@ function cueVideoById(videoid, startSeconds) {
 
 function cueVideoById(videoid) {
     player.cueVideoById(videoid, 0);
+    AndroidFunction.setSize(player.width, player.height);
+    //player.playVideo();
+}
+
+function loadVideoById(videoid, startSeconds) {
+    player.loadVideoById(videoid, startSeconds);
     AndroidFunction.setSize(player.width, player.height);
     //player.playVideo();
 }
